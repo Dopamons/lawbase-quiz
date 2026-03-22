@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>1분 AI 자가진단 - 로베이스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary:       #1A365D;
+    --primary-dark:  #122540;
+    --primary-light: #E2EBF0;
+    --primary-xs:    #f0f5f9;
+    --secondary:     #F06431;
+    --secondary-dark:#d44f1e;
+    --neutral:       #F8FAFC;
+    --gray-border:   #dde3e8;
+    --gray-text:     #5a6475;
+    --red:           #e03e3e;
+    --radius:        10px;
+    --shadow:        0 4px 28px rgba(26,54,93,0.16);
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: linear-gradient(145deg, #0d1e35 0%, #1A365D 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  /* ===== 랜딩 ===== */
+  #landing {
+    background: #fff;
+    border-radius: 20px;
+    max-width: 480px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .landing-top {
+    background: linear-gradient(160deg, #f0f5fb 0%, #fff 60%);
+    padding: 36px 28px 24px;
+    border-bottom: 1px solid var(--primary-light);
+  }
+
+  /* 헤드라인 강조 영역 */
+  .landing-headline {
+    padding-bottom: 20px;
+    margin-bottom: 16px;
+    border-bottom: 1px dashed var(--primary-light);
+  }
+  .landing-headline h1 {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1.32;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.8px;
+  }
+  .landing-headline h1 em {
+    font-style: normal;
+    color: var(--secondary);
+  }
+  .landing-headline .landing-sub {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: var(--gray-text);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .landing-headline .landing-sub strong {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* 체크리스트 */
+  .landing-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 10px;
+    border: 1px solid var(--primary-light);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .landing-list li {
+    font-size: 11.5px;
+    color: var(--gray-text);
+    font-weight: 500;
+    list-style: none;
+    padding: 7px 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border-bottom: 1px solid var(--primary-light);
+    background: #fff;
+    transition: background 0.2s, color 0.2s;
+    cursor: default;
+  }
+  .landing-list li:last-child { border-bottom: none; }
+  .landing-list li:hover {
+    background: var(--primary-xs);
+    color: var(--primary);
+  }
+  .landing-list li::before { content: ''; display: none; }
+  .landing-list li .li-check {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+    opacity: 0.6;
+  }
+  .landing-list li:hover .li-check { background: var(--primary-dark); opacity: 1; }
+  .landing-list li .li-check svg { width: 8px; height: 8px; }
+
+  .landing-notice {
+    font-size: 10.5px;
+    color: #bbb;
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+  .landing-notice strong { font-weight: 500; color: #aaa; }
+  .landing-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 24px 20px;
+  }
+
+  /* ===== 버튼 ===== */
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 24px;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.22s;
+    box-shadow: 0 4px 16px rgba(26,54,93,0.28);
+    letter-spacing: 0.2px;
+  }
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 22px rgba(26,54,93,0.35);
+  }
+  .btn-call {
+    background: #fff;
+    color: var(--primary);
+    border: 1.5px solid var(--primary-light);
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.22s;
+  }
+  .btn-call:hover {
+    background: var(--primary-xs);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+  }
+
+  /* 브랜드 태그 — 20% 확대 */
+  .brand-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff0eb;
+    color: #993C1D;
+    border-radius: 4px;
+    padding: 3px 9px;
+    margin-bottom: 10px;
+    letter-spacing: 0.2px;
+  }
+
+  /* 하단 신뢰 바 */
+  .landing-trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 14px;
+    background: var(--primary-xs);
+    border: 1px solid var(--primary-light);
+    border-radius: 8px;
+    margin-top: 4px;
+  }
+  .landing-trust-bar .trust-dot {
+    width: 7px;
+    height: 7px;
+    min-width: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+  .landing-trust-bar span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  /* 리스트 구분 소제목 */
+  .list-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-text);
+    margin-bottom: 8px;
+    padding-left: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ===== 모달 오버레이 ===== */
+  #modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,25,47,0.65);
+    z-index: 9999;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px 16px 40px;
+    overflow-y: auto;
+  }
+  #modal-overlay.active { display: flex; }
+
+  /* ===== 모달 박스 ===== */
+  .modal-box {
+    background: #fff;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 460px;
+    padding: 28px 24px 24px;
+    position: relative;
+    box-shadow: 0 12px 50px rgba(26,54,93,0.28);
+    margin-top: 20px;
+    animation: modalIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.9) translateY(24px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  /* ===== 진행바 ===== */
+  .progress-bar-wrap {
+    height: 6px;
+    background: var(--primary-light);
+    border-radius: 99px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #F06431;
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ===== 질문 헤더 ===== */
+  .q-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+  .q-title {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.45;
+    margin-bottom: 22px;
+  }
+
+  /* ===== 닫기 버튼 ===== */
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+  }
+  .modal-close:hover { background: var(--primary-light); color: var(--primary); }
+
+  /* ===== 선택지 카드 ===== */
+  .option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .option-card {
+    border: 1.5px solid var(--gray-border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+    background: var(--neutral);
+  }
+  .option-card:hover {
+    border-color: var(--primary);
+    background: var(--primary-xs);
+  }
+  .option-card.selected {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+  }
+  .option-card.selected .opt-sub { color: rgba(255,255,255,0.78); }
+  .opt-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 3px;
+  }
+  .option-card.selected .opt-title { color: #fff; }
+  .opt-sub {
+    font-size: 12.5px;
+    color: var(--gray-text);
+    line-height: 1.45;
+  }
+
+  /* ===== 복수선택 안내 ===== */
+  .multi-hint {
+    background: #fff8f0;
+    border: 1px solid rgba(240,100,49,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #a04010;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  /* ===== 숫자 입력 ===== */
+  .input-wrap {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .input-wrap input {
+    width: 100%;
+    border: 2px solid var(--primary-light);
+    border-radius: var(--radius);
+    padding: 14px 56px 14px 16px;
+    font-size: 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 600;
+    color: var(--primary);
+    outline: none;
+    background: var(--neutral);
+    transition: border-color 0.2s;
+  }
+  .input-wrap input:focus {
+    border-color: var(--primary);
+    background: #fff;
+  }
+  .input-unit {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .input-hint {
+    background: var(--primary-light);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 12.5px;
+    color: var(--gray-text);
+    margin-bottom: 16px;
+  }
+
+  /* ===== 다음 버튼 ===== */
+  .btn-next {
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .btn-next:disabled {
+    background: var(--primary-light);
+    color: #a0b0c0;
+    cursor: not-allowed;
+  }
+  .btn-next:not(:disabled):hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(26,54,93,0.25);
+  }
+
+  /* ===== 결과 화면 ===== */
+  .result-header {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--primary-light);
+  }
+  .result-header h2 {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1.4;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .result-header h2 em {
+    font-style: normal;
+    color: var(--secondary);
+  }
+  .result-header p {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--gray-text);
+    line-height: 1.6;
+  }
+  .result-header p strong {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  /* 결과 체크리스트 */
+  .result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 18px;
+    border: 1px solid var(--primary-light);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .result-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    font-size: 12.5px;
+    color: var(--gray-text);
+    font-weight: 500;
+    line-height: 1.45;
+    border-bottom: 1px solid var(--primary-light);
+    background: #fff;
+    cursor: default;
+    transition: background 0.2s, color 0.2s;
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item:hover {
+    background: var(--primary-xs);
+    color: var(--primary);
+  }
+  .result-check {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+    opacity: 0.75;
+  }
+  .result-item:hover .result-check { background: var(--primary-dark); opacity: 1; }
+  .result-check svg { width: 9px; height: 9px; }
+
+  /* ===== 결과 폼 ===== */
+  .result-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .form-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--gray-border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    gap: 10px;
+    background: var(--neutral);
+    transition: border-color 0.2s;
+  }
+  .form-input-wrap:focus-within { border-color: var(--primary); background: #fff; }
+  .form-input-wrap input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--primary);
+    width: 100%;
+    background: transparent;
+    font-weight: 500;
+  }
+  .form-input-wrap input::placeholder { color: #b0bec5; }
+  .form-icon { color: #c5d0dc; font-size: 17px; flex-shrink: 0; }
+
+  .privacy-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--gray-text);
+    margin-bottom: 8px;
+  }
+  .privacy-row input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+  .privacy-row a { color: var(--primary); text-decoration: underline; }
+
+  .ssl-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #b0bec5;
+    margin-bottom: 10px;
+  }
+
+  /* ===== 변호사 신뢰 문구 ===== */
+  .lawyer-trust-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+  }
+  .lawyer-trust-row .trust-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .lawyer-trust-row p {
+    font-size: 12.5px;
+    color: var(--primary);
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .lawyer-trust-row p span {
+    font-weight: 800;
+    display: block;
+  }
+
+  .btn-submit {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, #254e8a 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.4px;
+    transition: all 0.22s;
+    box-shadow: 0 4px 16px rgba(26,54,93,0.28);
+  }
+  .btn-submit:hover {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 22px rgba(26,54,93,0.35);
+  }
+
+  /* ===== 완료(Thank You) 화면 ===== */
+  #done-screen { display: none; padding: 8px 0 4px; }
+  #done-screen.active { display: block; }
+
+  .done-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 0.5px solid var(--primary-light);
+  }
+  .done-badge {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(26,54,93,0.22);
+    flex-shrink: 0;
+  }
+  .done-badge svg { width: 24px; height: 24px; }
+  .done-top-text h2 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.45;
+    margin: 0 0 4px 0;
+  }
+  .done-top-text p {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-text);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .done-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .done-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: default;
+    transition: background 0.18s, border-color 0.18s, transform 0.18s;
+  }
+  .done-info-item:hover {
+    background: var(--primary-xs);
+    border-color: var(--primary);
+    transform: translateX(4px);
+  }
+  .done-info-num {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--primary);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: background 0.18s, color 0.18s;
+  }
+  .done-info-item:hover .done-info-num {
+    background: var(--primary);
+    color: #fff;
+  }
+  .done-info-item p {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .done-footer-notice {
+    background: var(--neutral);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .done-footer-notice p {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary);
+    line-height: 1.65;
+    margin: 0 0 10px 0;
+  }
+  .done-footer-notice .done-lawyer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--gray-border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .done-lawyer-dot {
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 1.5px solid rgba(26,54,93,0.3);
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 랜딩 페이지 ===== -->
+<div id="landing">
+  <div class="landing-top">
+    <div class="landing-headline">
+      <span class="brand-tag">로베이스 1분 AI 자가진단</span>
+      <h1>내 빚, 도대체<br><em>얼마나 줄일 수 있을까?</em></h1>
+      <p class="landing-sub">지금 바로 확인하세요.<br><strong>막막한 채무 문제의 해결 가능성과 대응 방향을</strong><br>1분 안에 빠르게 확인할 수 있습니다.</p>
+    </div>
+    <div class="list-section-label">확인 가능한 내용</div>
+    <ul class="landing-list">
+      <li>
+        <span class="li-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        내 직업·소득으로 회생·파산 가능 여부 확인
+      </li>
+      <li>
+        <span class="li-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        심사에서 놓치면 안 되는 기각 위험 체크포인트
+      </li>
+      <li>
+        <span class="li-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        유사 사례의 실제 채무 조정 결과 비교
+      </li>
+      <li>
+        <span class="li-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        압류·독촉을 가족 모르게 막는 방법 안내
+      </li>
+    </ul>
+    <p class="landing-notice">
+      ※ 개인별 조건에 따라 진행 가능 여부와 결과는 달라질 수 있습니다.
+    </p>
+  </div>
+  <div class="landing-btns">
+    <button class="btn-primary" onclick="openModal()">
+      ⚡ 1분 AI 자가진단 시작
+    </button>
+    <button class="btn-call" onclick="location.href='tel:010-0000-0000'">
+      📞 빠른 무료상담
+    </button>
+    <div class="landing-trust-bar">
+      <span class="trust-dot"></span>
+      <span>정보관리 책임 · 로베이스 윤덕주 변호사</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 모달 오버레이 ===== -->
+<div id="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:16.6%"></div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-screen" id="q1">
+      <div class="q-label">질문 1 / 6</div>
+      <div class="q-title">현재 가장 크게 부담되는 점은 무엇인가요?</div>
+      <div class="option-list">
+        <div class="option-card" onclick="selectSingle(this,'q1')">
+          <div class="opt-title">줄어들지 않는 원금과 이자</div>
+          <div class="opt-sub">갚아도 빚이 줄지 않아<br>앞이 보이지 않게 느껴집니다</div>
+        </div>
+        <div class="option-card" onclick="selectSingle(this,'q1')">
+          <div class="opt-title">계속되는 독촉·압류 압박</div>
+          <div class="opt-sub">전화, 문자, 우편까지 이어져<br>일상생활이 버겁게 느껴집니다</div>
+        </div>
+        <div class="option-card" onclick="selectSingle(this,'q1')">
+          <div class="opt-title">실패에 대한 죄책감과 막막함</div>
+          <div class="opt-sub">혼자 감당하기 어렵고<br>어떻게 풀어야 할지 모르겠습니다</div>
+        </div>
+      </div>
+      <button class="btn-next" id="btn-q1" disabled onclick="nextQ(1)">다음</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-screen" id="q2" style="display:none">
+      <div class="q-label">질문 2 / 6</div>
+      <div class="q-title">채무가 늘어난 주된 이유가 있나요? (복수선택 가능)</div>
+      <div class="option-list" id="q2-options">
+        <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">해당 없음</div></div>
+        <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">주식·코인 투자 손실</div></div>
+        <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">도박으로 인한 채무</div></div>
+        <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">사업 실패</div></div>
+        <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">생활비 부족</div></div>
+        <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">보증 채무</div></div>
+      </div>
+      <div class="multi-hint" id="multi-hint-q2">해당되는 항목을 모두 선택해주세요 (0개 선택됨)</div>
+      <button class="btn-next" id="btn-q2" disabled onclick="nextQ(2)">다음</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-screen" id="q3" style="display:none">
+      <div class="q-label">질문 3 / 6</div>
+      <div class="q-title">월 평균 소득(세후)은 얼마인가요?</div>
+      <div class="input-wrap">
+        <input type="number" id="income-input" placeholder="숫자만 입력해주세요" oninput="checkInput('income-input','btn-q3')"/>
+        <span class="input-unit">만원</span>
+      </div>
+      <div class="input-hint">만원 단위로 입력해주세요 (예: 3,000만원 → 3000)<br>💡 정확하지 않아도 괜찮아요, 대략적으로 입력해주세요</div>
+      <button class="btn-next" id="btn-q3" disabled onclick="nextQ(3)">다음</button>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-screen" id="q4" style="display:none">
+      <div class="q-label">질문 4 / 6</div>
+      <div class="q-title">주민등록상 부양가족은 몇 명인가요? (본인 제외)</div>
+      <div class="option-list">
+        <div class="option-card" onclick="selectSingle(this,'q4')"><div class="opt-title">0명</div></div>
+        <div class="option-card" onclick="selectSingle(this,'q4')"><div class="opt-title">1명</div></div>
+        <div class="option-card" onclick="selectSingle(this,'q4')"><div class="opt-title">2명</div></div>
+        <div class="option-card" onclick="selectSingle(this,'q4')"><div class="opt-title">3명</div></div>
+        <div class="option-card" onclick="selectSingle(this,'q4')"><div class="opt-title">4명 이상</div></div>
+      </div>
+      <button class="btn-next" id="btn-q4" disabled onclick="nextQ(4)">다음</button>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-screen" id="q5" style="display:none">
+      <div class="q-label">질문 5 / 6</div>
+      <div class="q-title">총 채무액은 얼마인가요?</div>
+      <div class="input-wrap">
+        <input type="number" id="debt-input" placeholder="숫자만 입력해주세요" oninput="checkInput('debt-input','btn-q5')"/>
+        <span class="input-unit">만원</span>
+      </div>
+      <div class="input-hint">만원 단위로 입력해주세요 (예: 3,000만원 → 3000)<br>💡 정확하지 않아도 괜찮아요, 대략적으로 입력해주세요</div>
+      <button class="btn-next" id="btn-q5" disabled onclick="nextQ(5)">다음</button>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-screen" id="q6" style="display:none">
+      <div class="q-label">질문 6 / 6</div>
+      <div class="q-title">본인의 총 재산 가액은 얼마인가요?<br><span style="font-size:15px;font-weight:600;">(대략적으로 입력하셔도 됩니다.)</span></div>
+      <div class="input-wrap">
+        <input type="number" id="asset-input" placeholder="숫자만 입력해주세요" oninput="checkInput('asset-input','btn-q6')"/>
+        <span class="input-unit">만원</span>
+      </div>
+      <div class="input-hint">만원 단위로 입력해주세요 (예: 3,000만원 → 3000)</div>
+      <button class="btn-next" id="btn-q6" disabled onclick="showResult()">다음</button>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen" style="display:none">
+      <div class="progress-bar-wrap" style="margin-bottom:20px;">
+        <div class="progress-bar-fill" style="width:100%"></div>
+      </div>
+      <div class="result-header">
+        <h2>내 빚, <em>얼마나 조정될 수 있을지</em><br>지금 바로 확인해보세요</h2>
+        <p>1분 AI 자가진단으로<br>막막한 채무 상황에서 가능한<br><strong>아래의 해결 방향을 빠르게 안내해드립니다</strong></p>
+      </div>
+      <div class="result-list">
+        <div class="result-item">
+          <div class="result-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span>내 조건에서 개인회생·파산 중 어떤 게 유리할까?</span>
+        </div>
+        <div class="result-item">
+          <div class="result-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span>기각 위험을 줄이고 안정적으로 준비하는 핵심 포인트</span>
+        </div>
+        <div class="result-item">
+          <div class="result-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span>나와 비슷한 사례는 얼마나 탕감 받았을까?</span>
+        </div>
+        <div class="result-item">
+          <div class="result-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span>가족, 주변인 모르게 진행하기 위해 가장 먼저 확인해야 할 사항</span>
+        </div>
+      </div>
+      <div class="result-form">
+        <div class="form-input-wrap">
+          <span class="form-icon">👤</span>
+          <input type="text" id="name-input" placeholder="이름을 입력해주세요"/>
+        </div>
+        <div class="form-input-wrap">
+          <span class="form-icon">📱</span>
+          <input type="tel" id="phone-input" placeholder="결과를 안내받을 연락처를 입력해주세요 (- 없이 입력)"/>
+        </div>
+      </div>
+      <div class="privacy-row">
+        <input type="checkbox" id="privacy-check" checked/>
+        <label for="privacy-check">개인정보 처리방침에 동의합니다. <a href="#" onclick="return false;">[내용보기]</a></label>
+      </div>
+      <div class="ssl-row">🔒 SSL 보안연결</div>
+      <div class="lawyer-trust-row">
+        <span class="trust-icon" style="width:8px;height:8px;min-width:8px;border-radius:50%;background:var(--primary);display:inline-block;border:1.5px solid rgba(26,54,93,0.3);"></span>
+        <p>정보관리 책임<span>로베이스 윤덕주 변호사</span></p>
+      </div>
+      <button class="btn-submit" onclick="submitForm()">무료로 결과 확인하기</button>
+    </div>
+
+    <!-- 완료(Thank You) 화면 -->
+    <div id="done-screen">
+
+      <div class="done-top">
+        <div class="done-badge">
+          <svg viewBox="0 0 26 26" fill="none">
+            <path d="M5 13l6 6 10-10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="done-top-text">
+          <h2>접수가 완료되었습니다.<br>확인 후 순차적으로 연락드리겠습니다.</h2>
+          <p>입력해주신 내용을 바탕으로<br>현재 상황에 맞는 상담 준비를 진행하고 있습니다.</p>
+        </div>
+      </div>
+
+      <div class="done-info-list">
+        <div class="done-info-item">
+          <div class="done-info-num">1</div>
+          <p>채무 문제는 상황마다 확인해야 할 내용이 달라 남겨주신 정보를 꼼꼼히 검토한 뒤 안내드리고 있습니다.</p>
+        </div>
+        <div class="done-info-item">
+          <div class="done-info-num">2</div>
+          <p>파산관재인 출신 실무 경험을 바탕으로 놓치기 쉬운 부분까지 함께 살펴드리겠습니다.</p>
+        </div>
+      </div>
+
+      <div class="done-footer-notice">
+        <p>남겨주신 연락처로 순차적으로 연락드릴 예정입니다.<br>잠시만 기다려주세요.</p>
+        <div class="done-lawyer">
+          <span class="done-lawyer-dot"></span>
+          정보관리 책임 · 로베이스 윤덕주 변호사
+        </div>
+      </div>
+
+      <button class="btn-close-done" onclick="closeModal()" style="width:100%;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);padding:15px;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(26,54,93,0.22);transition:background 0.2s, transform 0.2s;">확인</button>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  var answers = {};
+  var currentQ = 1;
+  var totalQ = 6;
+
+  function openModal() {
+    document.getElementById('modal-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    showQ(1);
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('active');
+    document.body.style.overflow = '';
+    resetAll();
+  }
+
+  function resetAll() {
+    answers = {};
+    currentQ = 1;
+    document.querySelectorAll('.q-screen').forEach(function(el){ el.style.display='none'; });
+    document.getElementById('q1').style.display='block';
+    document.getElementById('result-screen').style.display='none';
+    document.getElementById('done-screen').classList.remove('active');
+    document.getElementById('done-screen').style.display='none';
+    document.querySelectorAll('.option-card').forEach(function(c){ c.classList.remove('selected'); });
+    document.querySelectorAll('.btn-next').forEach(function(b){ b.disabled=true; });
+    document.querySelectorAll('input[type=number]').forEach(function(i){ i.value=''; });
+    document.getElementById('name-input').value='';
+    document.getElementById('phone-input').value='';
+    document.getElementById('privacy-check').checked=true;
+    document.getElementById('multi-hint-q2').innerText='해당되는 항목을 모두 선택해주세요 (0개 선택됨)';
+    document.querySelector('.progress-bar-wrap').style.display='';
+    updateProgress(1);
+  }
+
+  function updateProgress(q) {
+    document.getElementById('progress-fill').style.width = (q / totalQ * 100) + '%';
+  }
+
+  function showQ(n) {
+    document.querySelectorAll('.q-screen').forEach(function(el){ el.style.display='none'; });
+    var el = document.getElementById('q'+n);
+    if(el) el.style.display='block';
+    currentQ = n;
+    updateProgress(n);
+  }
+
+  function selectSingle(card, qid) {
+    card.closest('.option-list').querySelectorAll('.option-card').forEach(function(c){ c.classList.remove('selected'); });
+    card.classList.add('selected');
+    answers[qid] = card.querySelector('.opt-title').innerText;
+    document.getElementById('btn-'+qid).disabled = false;
+  }
+
+  function selectMulti(card, qid) {
+    var optTitle = card.querySelector('.opt-title').innerText.trim();
+    var allCards = document.querySelectorAll('#'+qid+'-options .option-card');
+
+    if (optTitle === '해당 없음') {
+      // 해당 없음 클릭 시: 다른 선택 모두 해제 후 단독 선택
+      allCards.forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+    } else {
+      // 다른 항목 클릭 시: 해당 없음 자동 해제
+      allCards.forEach(function(c) {
+        if (c.querySelector('.opt-title').innerText.trim() === '해당 없음') {
+          c.classList.remove('selected');
+        }
+      });
+      card.classList.toggle('selected');
+    }
+
+    var selected = document.querySelectorAll('#'+qid+'-options .option-card.selected');
+    var cnt = selected.length;
+    document.getElementById('multi-hint-'+qid).innerText = '해당되는 항목을 모두 선택해주세요 (' + cnt + '개 선택됨)';
+    answers[qid] = Array.from(selected).map(function(c){ return c.querySelector('.opt-title').innerText; });
+    document.getElementById('btn-'+qid).disabled = (cnt === 0);
+  }
+
+  function checkInput(inputId, btnId) {
+    var val = document.getElementById(inputId).value;
+    document.getElementById(btnId).disabled = (val.trim() === '' || Number(val) < 0);
+  }
+
+  function nextQ(current) {
+    if(current === 3) answers['q3'] = document.getElementById('income-input').value + '만원';
+    if(current === 5) answers['q5'] = document.getElementById('debt-input').value + '만원';
+    var next = current + 1;
+    if(next <= totalQ) showQ(next);
+  }
+
+  function showResult() {
+    answers['q6'] = document.getElementById('asset-input').value + '만원';
+    document.querySelectorAll('.q-screen').forEach(function(el){ el.style.display='none'; });
+    document.querySelector('.progress-bar-wrap').style.display='none';
+    document.getElementById('result-screen').style.display='block';
+  }
+
+  function submitForm() {
+    var name = document.getElementById('name-input').value.trim();
+    var phone = document.getElementById('phone-input').value.trim();
+    var privacy = document.getElementById('privacy-check').checked;
+    if(!name) { alert('이름을 입력해주세요.'); return; }
+    if(!phone) { alert('연락처를 입력해주세요.'); return; }
+    if(!privacy) { alert('개인정보 처리방침에 동의해주세요.'); return; }
+
+    // ===== 구글 앱스크립트 URL 연동 =====
+    // var SCRIPT_URL = '★여기에_구글_앱스크립트_URL★';
+    // fetch(SCRIPT_URL, {
+    //   method: 'POST',
+    //   body: JSON.stringify({ name: name, phone: phone,
+    //     q1: answers['q1'], q2: answers['q2'],
+    //     q3: answers['q3'], q4: answers['q4'],
+    //     q5: answers['q5'], q6: answers['q6'] })
+    // });
+
+    document.getElementById('result-screen').style.display='none';
+    var done = document.getElementById('done-screen');
+    done.style.display='block';
+    done.classList.add('active');
+  }
+
+  document.getElementById('modal-overlay').addEventListener('click', function(e){
+    if(e.target === this) closeModal();
+  });
+</script>
+</body>
+</html>
