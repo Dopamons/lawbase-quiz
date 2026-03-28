@@ -197,28 +197,28 @@
   .landing-stat::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: var(--secondary);
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    left: 0; right: 0; bottom: 0;
+    height: 0%;
+    background: var(--primary-light);
+    transition: height 0.45s cubic-bezier(0.4,0,0.2,1);
     z-index: 0;
   }
   .landing-stat:hover {
-    border-color: var(--secondary);
+    border-color: var(--primary);
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(240,100,49,0.2);
+    box-shadow: 0 8px 20px rgba(26,54,93,0.15);
   }
-  .landing-stat:hover::before { transform: translateY(0); }
+  .landing-stat:hover::before { height: 100%; }
   .landing-stat .stat-num {
     font-size: 28px;
     font-weight: 900;
     color: var(--primary);
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.5px;
     position: relative;
     z-index: 1;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
     animation: statCountUp 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
   }
   @keyframes statCountUp {
@@ -228,17 +228,25 @@
   }
   .landing-stat:nth-child(1) .stat-num { animation-delay: 0.1s; }
   .landing-stat:nth-child(2) .stat-num { animation-delay: 0.3s; }
-  .landing-stat:hover .stat-num { color: #fff; }
+  .landing-stat:hover .stat-num {
+    color: var(--secondary);
+    transform: scale(1.12);
+  }
   .landing-stat .stat-label {
     font-size: 13px;
     font-weight: 600;
     color: var(--gray-text);
-    line-height: 1.5;
+    line-height: 1.4;
+    white-space: nowrap;
     position: relative;
     z-index: 1;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease;
   }
-  .landing-stat:hover .stat-label { color: rgba(255,255,255,0.85); }
+  .landing-stat:hover .stat-label {
+    color: var(--primary);
+    font-size: 15.6px;
+    font-weight: 700;
+  }
 
   /* 알림 배너 */
   .landing-alert {
@@ -1280,11 +1288,11 @@
     <div class="landing-stat-row">
       <div class="landing-stat">
         <div class="stat-num">최대 95%</div>
-        <div class="stat-label">채무 탕감<br>가능</div>
+        <div class="stat-label">채무 탕감 가능</div>
       </div>
       <div class="landing-stat">
         <div class="stat-num">1분</div>
-        <div class="stat-label">AI 자동<br>진단 완료</div>
+        <div class="stat-label">AI 자동 진단 완료</div>
       </div>
     </div>
 
