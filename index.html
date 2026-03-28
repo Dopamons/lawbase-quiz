@@ -421,8 +421,9 @@
     z-index: 9999;
     align-items: flex-start;
     justify-content: center;
-    padding: 20px 16px 40px;
+    padding: 16px 16px 32px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   #modal-overlay.active { display: flex; }
 
@@ -436,6 +437,7 @@
     position: relative;
     box-shadow: 0 12px 50px rgba(26,54,93,0.28);
     margin-top: 20px;
+    margin-bottom: 20px;
     animation: modalIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
   }
   @keyframes modalIn {
@@ -1066,11 +1068,13 @@
   }
   /* 탕감률 팡 효과 */
   .diag-card-value.accent {
-    font-size: 22px; font-weight: 900;
+    font-size: 18px; font-weight: 900;
     color: var(--secondary);
     animation: reliefPop 0.5s 1.25s cubic-bezier(0.34,1.56,0.64,1) both;
     display: inline-block;
     opacity: 0;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
   @keyframes reliefPop {
     0%   { transform: scale(0.3); opacity: 0; }
@@ -1752,6 +1756,15 @@
     return Math.min(total, 6);
   }
 
+  function formatDebt(amount) {
+    if (amount >= 10000) {
+      var uk = Math.floor(amount / 10000);
+      var man = amount % 10000;
+      return man > 0 ? uk + '억 ' + man.toLocaleString() + '만원' : uk + '억원';
+    }
+    return amount.toLocaleString() + '만원';
+  }
+
   function calcMinPayment(debt) {
     // 최저변제액: 채무 5천만 미만 → 채무×5%, 이상 → 채무×3% + 100만원
     if (debt < 5000) {
@@ -1797,7 +1810,7 @@
     if (income <= 0) {
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
-        debt > 0 ? debt.toLocaleString() + '만원 채무 소멸 가능' : '채무 소멸 가능';
+        debt > 0 ? formatDebt(debt) + ' 채무 소멸 가능' : '채무 소멸 가능';
       return;
     }
 
@@ -1805,7 +1818,7 @@
     if (disposable <= 0) {
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
-        debt > 0 ? debt.toLocaleString() + '만원 채무 소멸 가능' : '채무 소멸 가능';
+        debt > 0 ? formatDebt(debt) + ' 채무 소멸 가능' : '채무 소멸 가능';
       return;
     }
 
@@ -1834,14 +1847,14 @@
       // 60개월로도 최저변제액 미달 → 파산
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
-        debt > 0 ? debt.toLocaleString() + '만원 채무 소멸 가능' : '채무 소멸 가능';
+        debt > 0 ? formatDebt(debt) + ' 채무 소멸 가능' : '채무 소멸 가능';
       return;
     }
 
     // ⑤ 채무한도 초과 (무담보 10억) → 별도 검토
     if (debt > 100000) {
       document.getElementById('diag-caution').style.display = 'block';
-      document.getElementById('caution-debt').innerText = debt.toLocaleString() + '만원';
+      document.getElementById('caution-debt').innerText = formatDebt(debt);
       return;
     }
 
