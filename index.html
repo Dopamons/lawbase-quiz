@@ -876,19 +876,29 @@
     border-radius: 8px;
     padding: 12px 14px;
     cursor: default;
-    transition: background 0.18s, border-color 0.18s, transform 0.18s;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
     opacity: 0;
     animation: fadeSlideUp 0.4s ease both;
   }
   .done-info-item:nth-child(1) { animation-delay: 0.7s; }
   .done-info-item:nth-child(2) { animation-delay: 0.85s; }
   .done-info-item:nth-child(3) { animation-delay: 1.0s; }
-  .done-info-item:hover,
-  .done-info-item.auto-highlight {
-    background: var(--primary-xs);
-    border-color: var(--primary);
-    transform: translateX(4px);
+  .done-info-item:nth-child(4) { animation-delay: 1.15s; }
+
+  /* 왼쪽→오른쪽 채움 바 */
+  .done-fill-bar {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 0%;
+    background: var(--primary-light);
+    transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+    z-index: 0;
   }
+  .done-info-item.auto-highlight { border-color: var(--primary); }
+  .done-info-item.auto-highlight .done-fill-bar { width: 100%; }
+
   .done-info-num {
     width: 22px;
     height: 22px;
@@ -903,9 +913,10 @@
     color: var(--primary);
     flex-shrink: 0;
     margin-top: 1px;
-    transition: background 0.18s, color 0.18s;
+    position: relative;
+    z-index: 1;
+    transition: background 0.3s, color 0.3s;
   }
-  .done-info-item:hover .done-info-num,
   .done-info-item.auto-highlight .done-info-num {
     background: var(--primary);
     color: #fff;
@@ -916,6 +927,8 @@
     color: #1a1a1a;
     line-height: 1.65;
     margin: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .done-footer-notice {
@@ -1622,16 +1635,24 @@
 
       <div class="done-info-list">
         <div class="done-info-item">
+          <div class="done-fill-bar"></div>
           <div class="done-info-num">1</div>
           <p>남겨주신 소득·채무·재산 정보를 검토해 순차적으로 연락드립니다.</p>
         </div>
         <div class="done-info-item">
+          <div class="done-fill-bar"></div>
           <div class="done-info-num">2</div>
-          <p>상담 전 본인의 대략적인 월 소득과 빚의 규모 정도만 파악해 두셔도 충분합니다. 복잡한 서류 준비 없이도 상담이 가능합니다.</p>
+          <p>상담 전 본인의 대략적인 월 소득, 빚의 규모, 채권자 목록 정도만 파악해 두셔도 충분합니다. 복잡한 서류 준비 없이도 상담이 가능합니다.</p>
         </div>
         <div class="done-info-item">
+          <div class="done-fill-bar"></div>
           <div class="done-info-num">3</div>
-          <p>상담자가 확인하는 면책에 영향을 줄 수 있는 사항은 상담 시 솔직하게 말씀해주실수록 더 정확한 방향을 안내드릴 수 있습니다. 상담 내용은 <strong>변호사법 제26조</strong>에 따라 법률상 비밀유지 의무가 적용되어 외부에 절대 공개되지 않습니다.</p>
+          <p>상담자가 확인하는 면책에 영향을 줄 수 있는 사항은 상담 시 솔직하게 말씀해주실수록 더 정확한 방향을 안내드릴 수 있습니다.</p>
+        </div>
+        <div class="done-info-item">
+          <div class="done-fill-bar"></div>
+          <div class="done-info-num">4</div>
+          <p>상담 내용은 <strong>변호사법 제26조</strong>에 따라 법률상 비밀유지 의무가 적용되어 외부에 절대 공개되지 않습니다.</p>
         </div>
       </div>
 
@@ -1907,20 +1928,18 @@
 
   function startDoneHighlight() {
     var items = document.querySelectorAll('.done-info-item');
-    var delays = [1400, 2600, 3800]; // 각 카드 하이라이트 시작 시간 (ms)
-    var duration = 1000; // 각 카드 하이라이트 유지 시간 (ms)
+    var delays = [1400, 2700, 4000, 5300];
+    var duration = 1100;
 
     items.forEach(function(item, i) {
-      // 하이라이트 ON
       setTimeout(function() {
         items.forEach(function(el){ el.classList.remove('auto-highlight'); });
         items[i].classList.add('auto-highlight');
       }, delays[i]);
 
-      // 하이라이트 OFF
       setTimeout(function() {
         items[i].classList.remove('auto-highlight');
-      }, delays[i] + duration);
+      }, delays[i] + duration + 300);
     });
   }
 
