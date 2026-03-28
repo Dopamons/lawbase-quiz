@@ -2042,7 +2042,11 @@
   }
 
   function toggleUpsell(el) {
-    el.classList.toggle('selected');
+    var group = el.closest('.diag-upsell-items');
+    var items = group.querySelectorAll('.diag-upsell-item');
+    var isSelected = el.classList.contains('selected');
+    items.forEach(function(item) { item.classList.remove('selected'); });
+    if (!isSelected) el.classList.add('selected');
   }
 
   function resetIOSZoom() {
