@@ -878,7 +878,8 @@
   .done-info-item:nth-child(1) { animation-delay: 0.7s; }
   .done-info-item:nth-child(2) { animation-delay: 0.85s; }
   .done-info-item:nth-child(3) { animation-delay: 1.0s; }
-  .done-info-item:hover {
+  .done-info-item:hover,
+  .done-info-item.auto-highlight {
     background: var(--primary-xs);
     border-color: var(--primary);
     transform: translateX(4px);
@@ -899,7 +900,8 @@
     margin-top: 1px;
     transition: background 0.18s, color 0.18s;
   }
-  .done-info-item:hover .done-info-num {
+  .done-info-item:hover .done-info-num,
+  .done-info-item.auto-highlight .done-info-num {
     background: var(--primary);
     color: #fff;
   }
@@ -1896,6 +1898,25 @@
     document.querySelector('.progress-bar-wrap').style.display = '';
   }
 
+  function startDoneHighlight() {
+    var items = document.querySelectorAll('.done-info-item');
+    var delays = [1400, 2600, 3800]; // 각 카드 하이라이트 시작 시간 (ms)
+    var duration = 1000; // 각 카드 하이라이트 유지 시간 (ms)
+
+    items.forEach(function(item, i) {
+      // 하이라이트 ON
+      setTimeout(function() {
+        items.forEach(function(el){ el.classList.remove('auto-highlight'); });
+        items[i].classList.add('auto-highlight');
+      }, delays[i]);
+
+      // 하이라이트 OFF
+      setTimeout(function() {
+        items[i].classList.remove('auto-highlight');
+      }, delays[i] + duration);
+    });
+  }
+
   function submitForm() {
     var name = document.getElementById('name-input').value.trim();
     var phone = document.getElementById('phone-input').value.trim();
@@ -1919,6 +1940,9 @@
     var done = document.getElementById('done-screen');
     done.style.display='block';
     done.classList.add('active');
+
+    // 카드 자동 하이라이트 시퀀스 시작
+    startDoneHighlight();
   }
 
   document.getElementById('modal-overlay').addEventListener('click', function(e){
