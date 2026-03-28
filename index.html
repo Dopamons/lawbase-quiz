@@ -13,6 +13,14 @@
     font-size: 16px !important;
   }
 
+  /* 전역 텍스트 선택 방지 */
+  body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
   :root {
     --primary:       #1A365D;
     --primary-dark:  #122540;
@@ -421,7 +429,12 @@
     color: var(--primary);
   }
 
-  /* 리스트 구분 소제목 */
+  /* 입력창은 텍스트 선택 허용 */
+  input, textarea {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    user-select: auto;
+  }
   .list-section-label {
     font-size: 11px;
     font-weight: 600;
@@ -1185,7 +1198,7 @@
     padding: 5px 13px;
     font-size: 12px; font-weight: 700;
     color: var(--secondary);
-    cursor: default;
+    cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
     display: inline-flex;
     align-items: center;
@@ -1204,12 +1217,12 @@
       box-shadow: 0 4px 10px rgba(240,100,49,0.28);
     }
   }
-  /* 모바일 터치 클릭 */
-  .diag-upsell-item:active {
+  /* 선택된 상태 - 오렌지 아이템 */
+  .diag-upsell-item.selected {
     background: var(--secondary);
     color: #fff;
     border-color: var(--secondary);
-    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(240,100,49,0.3);
   }
 
   .diag-upsell-item.bk-item {
@@ -1219,6 +1232,7 @@
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     user-select: none;
+    cursor: pointer;
   }
   /* PC hover */
   @media (hover: hover) {
@@ -1229,12 +1243,12 @@
       box-shadow: 0 4px 10px rgba(26,54,93,0.25);
     }
   }
-  /* 모바일 터치 클릭 */
-  .diag-upsell-item.bk-item:active {
+  /* 선택된 상태 - 네이비 아이템 */
+  .diag-upsell-item.bk-item.selected {
     background: var(--primary);
     color: #fff !important;
     border-color: var(--primary);
-    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(26,54,93,0.25);
   }
   .diag-notice-small {
     font-size: 10.5px; color: #c0a898;
@@ -1489,12 +1503,12 @@
           </div>
           <p class="diag-upsell-desc">위 결과는 기본 생계비만 반영한 수치예요.<br>무료 상담을 통해 아래 조건을 추가로 반영하면<br><strong>월 변제금이 더 낮아지고 탕감률이 높아집니다.</strong></p>
           <div class="diag-upsell-items">
-            <span class="diag-upsell-item">🏠 주거비</span>
-            <span class="diag-upsell-item">🏥 의료비</span>
-            <span class="diag-upsell-item">📚 교육비</span>
-            <span class="diag-upsell-item">👶 양육비</span>
-            <span class="diag-upsell-item">💊 간병비</span>
-            <span class="diag-upsell-item">✚ 기타 조건</span>
+            <span class="diag-upsell-item" onclick="toggleUpsell(this)">🏠 주거비</span>
+            <span class="diag-upsell-item" onclick="toggleUpsell(this)">🏥 의료비</span>
+            <span class="diag-upsell-item" onclick="toggleUpsell(this)">📚 교육비</span>
+            <span class="diag-upsell-item" onclick="toggleUpsell(this)">👶 양육비</span>
+            <span class="diag-upsell-item" onclick="toggleUpsell(this)">💊 간병비</span>
+            <span class="diag-upsell-item" onclick="toggleUpsell(this)">✚ 기타 조건</span>
           </div>
           <div class="diag-notice-small">※ 이 결과는 참고 수치이며, 실제 법원 인가 결과는 달라질 수 있습니다.</div>
           <div id="borderline-notice" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(240,100,49,0.08);border:1px solid rgba(240,100,49,0.2);border-radius:8px;">
@@ -1531,11 +1545,11 @@
           </div>
           <p class="diag-upsell-desc" style="color:#2a3a50;">아래 항목은 면책에 영향을 줄 수 있어<br>반드시 <strong style="color:var(--primary);">전문 변호사와 세부 상담이 필요합니다.</strong></p>
           <div class="diag-upsell-items">
-            <span class="diag-upsell-item bk-item">🎲 도박·낭비 이력</span>
-            <span class="diag-upsell-item bk-item">📅 최근 면책 이력</span>
-            <span class="diag-upsell-item bk-item">📉 재산 은닉 여부</span>
-            <span class="diag-upsell-item bk-item">💳 허위 채무 여부</span>
-            <span class="diag-upsell-item bk-item">🏛️ 세금·공과금 체납</span>
+            <span class="diag-upsell-item bk-item" onclick="toggleUpsell(this)">🎲 도박·낭비 이력</span>
+            <span class="diag-upsell-item bk-item" onclick="toggleUpsell(this)">📅 최근 면책 이력</span>
+            <span class="diag-upsell-item bk-item" onclick="toggleUpsell(this)">📉 재산 은닉 여부</span>
+            <span class="diag-upsell-item bk-item" onclick="toggleUpsell(this)">💳 허위 채무 여부</span>
+            <span class="diag-upsell-item bk-item" onclick="toggleUpsell(this)">🏛️ 세금·공과금 체납</span>
           </div>
           <div class="diag-notice-small" style="border-color:rgba(26,54,93,0.1);color:#8090a8;">※ 개인별 상세 조건에 따라 세부상담이 필요할 수 있습니다.</div>
         </div>
@@ -2025,6 +2039,10 @@
         items[i].classList.remove('auto-highlight');
       }, delays[i] + duration + 300);
     });
+  }
+
+  function toggleUpsell(el) {
+    el.classList.toggle('selected');
   }
 
   function resetIOSZoom() {
