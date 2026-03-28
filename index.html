@@ -397,9 +397,15 @@
     border-color: rgba(26,54,93,0.2);
   }
   .landing-trust-bar .trust-dot {
-    width: 7px; height: 7px; min-width: 7px;
+    width: 9px; height: 9px; min-width: 9px;
     border-radius: 50%;
-    background: var(--primary);
+    background: #22c55e;
+    animation: livePulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+    50%       { opacity: 0.85; transform: scale(1.15); box-shadow: 0 0 0 5px rgba(34,197,94,0); }
   }
   .landing-trust-bar span {
     font-size: 12px;
@@ -508,6 +514,28 @@
     gap: 10px;
     margin-bottom: 18px;
   }
+  /* ===== 뒤로가기 버튼 ===== */
+  .modal-back {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .modal-back:hover { background: var(--primary-light); color: var(--primary); }
+  .modal-back.hidden { visibility: hidden; pointer-events: none; }
+
   .option-card {
     border: 1.5px solid var(--gray-border);
     border-radius: var(--radius);
@@ -523,6 +551,8 @@
     border-color: var(--primary);
     background: var(--primary-xs);
   }
+  /* 모바일 터치 반짝임 방지 */
+  .option-card:active { opacity: 0.85; }
   .option-card.selected {
     border-color: var(--primary);
     background: var(--primary);
@@ -967,12 +997,13 @@
     color: var(--primary);
   }
   .done-lawyer-dot {
-    width: 8px;
-    height: 8px;
-    min-width: 8px;
+    width: 9px;
+    height: 9px;
+    min-width: 9px;
     border-radius: 50%;
-    background: var(--primary);
-    border: 1.5px solid rgba(26,54,93,0.3);
+    background: #22c55e;
+    animation: livePulse 2s ease-in-out infinite;
+    flex-shrink: 0;
   }
   /* ===== AI 진단 결과 화면 ===== */
   #diagnosis-screen { padding: 4px 0; }
@@ -1284,6 +1315,7 @@
 <!-- ===== 모달 오버레이 ===== -->
 <div id="modal-overlay">
   <div class="modal-box">
+    <button class="modal-back hidden" id="modal-back" onclick="prevQ()">‹</button>
     <button class="modal-close" onclick="closeModal()">✕</button>
 
     <div class="progress-bar-wrap">
@@ -1559,7 +1591,7 @@
         </div>
         <div class="ssl-row" style="margin-bottom:10px;">🔒 SSL 보안연결</div>
         <div class="lawyer-trust-row" style="margin-bottom:14px;">
-          <span style="width:8px;height:8px;min-width:8px;border-radius:50%;background:var(--primary);display:inline-block;border:1.5px solid rgba(26,54,93,0.3);flex-shrink:0;"></span>
+          <span style="width:9px;height:9px;min-width:9px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;animation:livePulse 2s ease-in-out infinite;"></span>
           <p style="margin:0;text-align:left;line-height:1.5;">
             <span style="font-size:11px;color:var(--gray-text);font-weight:500;display:block;">정보관리 책임 변호사</span>
             <span style="font-size:13px;color:var(--primary);font-weight:800;">로베이스 윤덕주 변호사</span>
@@ -1612,7 +1644,7 @@
       </div>
       <div class="ssl-row">🔒 SSL 보안연결</div>
       <div class="lawyer-trust-row">
-        <span class="trust-icon" style="width:8px;height:8px;min-width:8px;border-radius:50%;background:var(--primary);display:inline-block;border:1.5px solid rgba(26,54,93,0.3);"></span>
+        <span class="trust-icon" style="width:9px;height:9px;min-width:9px;border-radius:50%;background:#22c55e;display:inline-block;animation:livePulse 2s ease-in-out infinite;"></span>
         <p>정보관리 책임<span>로베이스 윤덕주 변호사</span></p>
       </div>
       <button class="btn-submit" onclick="submitForm()">무료로 결과 확인하기</button>
@@ -1715,12 +1747,28 @@
     document.getElementById('progress-fill').style.width = (q / totalQ * 100) + '%';
   }
 
+  function updateBackBtn(q) {
+    var btn = document.getElementById('modal-back');
+    if (q <= 1) {
+      btn.classList.add('hidden');
+    } else {
+      btn.classList.remove('hidden');
+    }
+  }
+
   function showQ(n) {
     document.querySelectorAll('.q-screen').forEach(function(el){ el.style.display='none'; });
     var el = document.getElementById('q'+n);
     if(el) el.style.display='block';
     currentQ = n;
     updateProgress(n);
+    updateBackBtn(n);
+  }
+
+  function prevQ() {
+    if (currentQ > 1) {
+      showQ(currentQ - 1);
+    }
   }
 
   function selectSingle(card, qid) {
