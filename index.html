@@ -8,6 +8,11 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* iOS Safari 자동 확대 방지 - 모든 input 16px 강제 */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
   :root {
     --primary:       #1A365D;
     --primary-dark:  #122540;
@@ -1917,6 +1922,17 @@
     });
   }
 
+  function resetIOSZoom() {
+    // iOS Safari 확대 상태 강제 초기화
+    var viewport = document.querySelector('meta[name=viewport]');
+    if (viewport) {
+      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0';
+      setTimeout(function() {
+        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      }, 300);
+    }
+  }
+
   function submitForm() {
     var name = document.getElementById('name-input').value.trim();
     var phone = document.getElementById('phone-input').value.trim();
@@ -1935,6 +1951,8 @@
     //     q5: answers['q5'], q6: answers['q6'] })
     // });
 
+    // iOS 확대 상태 초기화 후 감사 화면 표시
+    resetIOSZoom();
     document.getElementById('diagnosis-screen').style.display='none';
     document.getElementById('result-screen').style.display='none';
     var done = document.getElementById('done-screen');
