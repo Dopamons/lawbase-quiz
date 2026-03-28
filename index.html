@@ -516,6 +516,8 @@
     transition: all 0.18s;
     user-select: none;
     background: var(--neutral);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   .option-card:hover {
     border-color: var(--primary);
@@ -1299,7 +1301,7 @@
     <!-- Q2 -->
     <div class="q-screen" id="q2" style="display:none">
       <div class="q-label">질문 2 / 6</div>
-      <div class="q-title">채무가 늘어난 주된 이유가 있나요? (복수선택 가능)</div>
+      <div class="q-title" style="word-break:keep-all;overflow-wrap:break-word;">채무가 늘어난 주된 이유가 있나요?<br><span style="font-size:15px;font-weight:600;">(복수선택 가능)</span></div>
       <div class="option-list" id="q2-options">
         <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">해당 없음</div></div>
         <div class="option-card" onclick="selectMulti(this,'q2')"><div class="opt-title">주식·코인 투자 손실</div></div>
