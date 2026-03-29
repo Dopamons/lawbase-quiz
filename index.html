@@ -201,6 +201,7 @@
     transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 3px 0 #c8d8e8, 0 5px 14px rgba(26,54,93,0.08);
   }
   .landing-stat::before {
     content: '';
@@ -213,8 +214,8 @@
   }
   .landing-stat:hover {
     border-color: var(--primary);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(26,54,93,0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 7px 0 #b8ccde, 0 14px 28px rgba(26,54,93,0.14);
   }
   .landing-stat:hover::before { height: 100%; }
   .landing-stat .stat-num {
@@ -562,22 +563,28 @@
     border-radius: var(--radius);
     padding: 14px 16px;
     cursor: pointer;
-    transition: all 0.18s;
+    transition: all 0.18s cubic-bezier(0.34,1.2,0.64,1);
     user-select: none;
-    background: var(--neutral);
+    background: #fff;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+    box-shadow: 0 2px 0 #dde6ef, 0 3px 8px rgba(26,54,93,0.05);
   }
-  .option-card:hover {
-    border-color: var(--primary);
-    background: var(--primary-xs);
+  @media (hover: hover) {
+    .option-card:hover {
+      border-color: var(--primary);
+      background: var(--primary-xs);
+      transform: translateY(-2px) translateX(2px);
+      box-shadow: 0 4px 0 #c8d8e8, 0 8px 18px rgba(26,54,93,0.1);
+    }
   }
-  /* 모바일 터치 반짝임 방지 */
   .option-card:active { opacity: 0.85; }
   .option-card.selected {
     border-color: var(--primary);
     background: var(--primary);
     color: #fff;
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #0f2240, 0 2px 6px rgba(26,54,93,0.2);
   }
   .option-card.selected .opt-sub { color: rgba(255,255,255,0.78); }
   .opt-title {
@@ -1107,12 +1114,13 @@
 
   /* 결과 카드 */
   .diag-card {
-    background: var(--neutral);
+    background: #fff;
     border: 1px solid var(--primary-light);
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 16px;
     margin-bottom: 12px;
     overflow: hidden;
+    box-shadow: 0 3px 0 #c8d8e8, 0 6px 20px rgba(26,54,93,0.09);
   }
   .diag-card-row {
     display: flex; align-items: center;
