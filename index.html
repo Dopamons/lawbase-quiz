@@ -1535,6 +1535,12 @@
         <div class="diag-title">개인파산이 가능하지만<br>면책 관련 검토가 필요합니다</div>
         <div class="diag-sub">소득 대비 채무 구조를 고려할 때 파산이 유리할 수 있습니다</div>
 
+        <!-- 10억 초과 안내 (조건부 노출) -->
+        <div id="over-limit-notice" style="display:none;margin-bottom:12px;padding:11px 14px;background:rgba(240,100,49,0.07);border:1px solid rgba(240,100,49,0.25);border-radius:10px;">
+          <p style="font-size:12.5px;font-weight:700;color:var(--secondary);margin:0 0 4px;">⚠️ 개인회생 채무 한도(10억원) 초과</p>
+          <p style="font-size:12px;font-weight:500;color:#5a4030;line-height:1.6;margin:0;">채무액이 무담보 10억원을 초과하여 <strong>개인회생은 신청이 불가</strong>합니다. 다만 <strong>개인파산은 채무 한도 제한이 없어</strong> 신청 가능합니다. 면책 가능 여부를 상담을 통해 확인해드립니다.</p>
+        </div>
+
         <div class="diag-card">
           <div class="diag-card-row">
             <span class="diag-card-label">파산·면책 후</span>
@@ -1796,7 +1802,7 @@
     document.getElementById('name-input').value='';
     document.getElementById('phone-input').value='';
     document.getElementById('privacy-check').checked=true;
-    document.getElementById('multi-hint-q2').innerText='해당되는 항목을 모두 선택해주세요 (0개 선택됨)';
+    document.getElementById('over-limit-notice').style.display = 'none';
     document.getElementById('multi-hint-q1').innerText='해당되는 항목을 모두 선택해주세요 (0개 선택됨)';
     document.querySelector('.progress-bar-wrap').style.display='';
     updateProgress(1);
@@ -1936,7 +1942,7 @@
 
     // ===== 판단 플로우 =====
 
-    // ① 재산 > 채무 → 회생·파산 불필요 (청산가치 보장 원칙상 신청 자체 불가)
+    // ① 재산 > 채무 → 회생·파산 불필요
     if (asset > 0 && asset >= debt) {
       document.getElementById('diag-unnecessary').style.display = 'block';
       document.getElementById('unnecessary-asset').innerText = asset.toLocaleString() + '만원';
@@ -1960,13 +1966,24 @@
       return;
     }
 
-    // ④ 최저변제액 충족 여부 확인
+    // ④ 개인회생 채무 한도 초과 (무담보 10억) → 개인회생 불가, 파산 안내
+    if (debt > 100000) {
+      document.getElementById('diag-bankruptcy').style.display = 'block';
+      document.getElementById('bankruptcy-debt-display').innerText =
+        formatDebt(debt) + ' 채무 소멸 가능';
+      // 10억 초과 안내 문구 표시
+      var overLimitNotice = document.getElementById('over-limit-notice');
+      if (overLimitNotice) overLimitNotice.style.display = 'block';
+      return;
+    }
+
+    // ⑤ 최저변제액 충족 여부 확인
     var minPayment = calcMinPayment(debt);
     var total36 = disposable * 36;
     var total60 = disposable * 60;
 
     var period, totalPayment;
-    var isBorderline = false; // 아슬아슬한 60개월 케이스 플래그
+    var isBorderline = false;
 
     if (total36 >= Math.max(minPayment, asset)) {
       period = 36;
@@ -1975,24 +1992,14 @@
       period = 60;
       totalPayment = total60;
     } else if (asset > 0 && asset < debt && total60 >= minPayment) {
-      // 60개월 변제금이 재산(청산가치)엔 못 미치지만
-      // 최저변제액은 충족하고 재산 < 채무인 경우 →
-      // 청산가치(재산)를 기준으로 60개월 회생 가능
       period = 60;
       totalPayment = Math.max(total60, asset);
-      isBorderline = true; // 아슬아슬한 케이스 표시
+      isBorderline = true;
     } else {
       // 60개월로도 최저변제액 미달 → 파산
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
         debt > 0 ? formatDebt(debt) + ' 채무 소멸 가능' : '채무 소멸 가능';
-      return;
-    }
-
-    // ⑤ 채무한도 초과 (무담보 10억) → 별도 검토
-    if (debt > 100000) {
-      document.getElementById('diag-caution').style.display = 'block';
-      document.getElementById('caution-debt').innerText = formatDebt(debt);
       return;
     }
 
