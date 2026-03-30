@@ -1112,6 +1112,26 @@
     to   { opacity: 1; transform: translateX(0); }
   }
 
+  /* 입력 조건 태그 */
+  .condition-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 16px;
+    animation: fadeSlideUp 0.4s 0.5s ease both;
+    opacity: 0;
+  }
+  .condition-tag {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-light);
+    border-radius: 99px;
+    padding: 4px 11px;
+    white-space: nowrap;
+  }
+
   /* 결과 카드 */
   .diag-card {
     background: #fff;
@@ -1480,6 +1500,7 @@
         </div>
         <div class="diag-title">개인회생 진행이 가능합니다</div>
         <div class="diag-sub">입력하신 정보를 바탕으로 분석한 결과입니다</div>
+        <div class="condition-tags" id="rehab-condition-tags"></div>
 
         <div class="diag-card">
           <div class="diag-card-row">
@@ -1534,11 +1555,13 @@
         </div>
         <div class="diag-title">개인파산이 가능하지만<br>면책 관련 검토가 필요합니다</div>
         <div class="diag-sub">소득 대비 채무 구조를 고려할 때 파산이 유리할 수 있습니다</div>
+        <div class="condition-tags" id="bk-condition-tags"></div>
 
         <!-- 10억 초과 안내 (조건부 노출) -->
         <div id="over-limit-notice" style="display:none;margin-bottom:12px;padding:11px 14px;background:rgba(240,100,49,0.07);border:1px solid rgba(240,100,49,0.25);border-radius:10px;">
           <p style="font-size:12.5px;font-weight:700;color:var(--secondary);margin:0 0 4px;">⚠️ 개인회생 채무 한도(10억원) 초과</p>
-          <p style="font-size:12px;font-weight:500;color:#5a4030;line-height:1.6;margin:0;">채무액이 무담보 10억원을 초과하여 <strong>개인회생은 신청이 불가</strong>합니다. 다만 <strong>개인파산은 채무 한도 제한이 없어</strong> 신청 가능합니다. 면책 가능 여부를 상담을 통해 확인해드립니다.</p>
+          <p style="font-size:12px;font-weight:500;color:#5a4030;line-height:1.6;margin:0 0 8px;">채무액이 무담보 10억원을 초과하여 <strong>개인회생은 신청이 불가</strong>합니다. 다만 <strong>개인파산은 채무 한도 제한이 없어</strong> 신청 가능합니다.</p>
+          <p style="font-size:12px;font-weight:500;color:#5a4030;line-height:1.6;margin:0;">소득이 있는 상태에서의 파산 신청은 법원이 지급불능 여부를 종합적으로 판단하므로, <strong>면책 가능 여부를 반드시 전문 변호사와 확인하시기 바랍니다.</strong></p>
         </div>
 
         <div class="diag-card">
@@ -1570,13 +1593,56 @@
         </div>
       </div>
 
-      <!-- 회생·파산 불필요 (재산 > 채무) -->
+      <!-- 채무 1500만원 미만 별도 안내 화면 (상담 신청 없음) -->
+      <div id="diag-small-debt" style="display:none">
+        <div class="diag-badge-wrap">
+          <div class="diag-badge diag-badge-orange">📋</div>
+        </div>
+        <div class="diag-title">회생·파산보다<br>더 유리한 방법이 있어요</div>
+        <div class="diag-sub">채무 1,500만원 미만은 절차 비용 대비<br>실익이 적어 다른 방법을 권장드립니다</div>
+        <div class="condition-tags" id="small-debt-condition-tags"></div>
+
+        <div class="diag-card">
+          <div class="diag-card-row">
+            <span class="diag-card-label">입력하신 채무액</span>
+            <span class="diag-card-value" id="small-debt-amount">—</span>
+          </div>
+          <div class="diag-card-row">
+            <span class="diag-card-label">회생·파산 권장 기준</span>
+            <span class="diag-card-value" style="color:var(--secondary);font-weight:800;">1,500만원 이상</span>
+          </div>
+        </div>
+
+        <!-- 외부 기관 안내 박스 -->
+        <div style="border:1px solid var(--primary-light);border-radius:12px;overflow:hidden;margin-bottom:14px;">
+          <div style="background:var(--primary-light);padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--primary);">아래 기관에서 도움받으실 수 있어요</div>
+          <div style="padding:10px 14px;border-top:1px solid var(--primary-light);display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--primary);">신용회복위원회</div>
+              <div style="font-size:11px;color:var(--gray-text);margin-top:2px;">채무조정·분할상환 협의</div>
+            </div>
+            <a href="tel:16005500" style="font-size:15px;font-weight:800;color:var(--secondary);text-decoration:none;">1600-5500</a>
+          </div>
+          <div style="padding:10px 14px;border-top:1px solid var(--primary-light);display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--primary);">법률구조공단</div>
+              <div style="font-size:11px;color:var(--gray-text);margin-top:2px;">무료 법률 상담</div>
+            </div>
+            <a href="tel:132" style="font-size:15px;font-weight:800;color:var(--secondary);text-decoration:none;">132</a>
+          </div>
+        </div>
+
+        <p style="font-size:12px;color:var(--gray-text);text-align:center;line-height:1.7;margin-bottom:16px;">채무가 더 늘어나거나 상황이 변하면<br>언제든지 다시 진단해보세요</p>
+
+        <button onclick="closeModal()" style="width:100%;background:var(--primary-light);color:var(--primary);border:none;border-radius:var(--radius);padding:14px;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">확인</button>
+      </div>
       <div id="diag-unnecessary" style="display:none">
         <div class="diag-badge-wrap">
           <div class="diag-badge diag-badge-orange">💼</div>
         </div>
         <div class="diag-title">현재 상황에서는<br>회생·파산이 필요하지 않습니다</div>
         <div class="diag-sub">재산이 채무보다 많아 일반적인 변제가 가능한 상황입니다</div>
+        <div class="condition-tags" id="unnecessary-condition-tags"></div>
 
         <div class="diag-card">
           <div class="diag-card-row">
@@ -1636,7 +1702,7 @@
       </div>
 
       <!-- 공통 하단: 바로 개인정보 입력 -->
-      <div class="diag-cta-wrap">
+      <div class="diag-cta-wrap" id="diag-cta-wrap">
         <div class="diag-cta-title">무료 상담 신청</div>
         <div class="diag-cta-desc">변호사가 직접 검토 후 정확한 방향을 안내드립니다</div>
         <div class="result-form" style="margin-bottom:10px;">
@@ -1803,6 +1869,8 @@
     document.getElementById('phone-input').value='';
     document.getElementById('privacy-check').checked=true;
     document.getElementById('over-limit-notice').style.display = 'none';
+    document.getElementById('diag-small-debt').style.display = 'none';
+    document.getElementById('diag-cta-wrap').style.display = 'block';
     document.getElementById('multi-hint-q1').innerText='해당되는 항목을 모두 선택해주세요 (0개 선택됨)';
     document.querySelector('.progress-bar-wrap').style.display='';
     updateProgress(1);
@@ -1939,14 +2007,26 @@
     document.getElementById('diag-bankruptcy').style.display = 'none';
     document.getElementById('diag-caution').style.display = 'none';
     document.getElementById('diag-unnecessary').style.display = 'none';
+    document.getElementById('diag-small-debt').style.display = 'none';
+    document.getElementById('diag-cta-wrap').style.display = 'block';
 
     // ===== 판단 플로우 =====
+
+    // ★ 채무 1,500만원 미만 → 별도 안내 화면 (CTA 없음, 전화 안 옴)
+    if (debt > 0 && debt < 1500) {
+      document.getElementById('diag-small-debt').style.display = 'block';
+      document.getElementById('small-debt-amount').innerText = formatDebt(debt);
+      document.getElementById('diag-cta-wrap').style.display = 'none';
+      renderConditionTags('small-debt-condition-tags', income, debt, asset, fsize);
+      return;
+    }
 
     // ① 재산 > 채무 → 회생·파산 불필요
     if (asset > 0 && asset >= debt) {
       document.getElementById('diag-unnecessary').style.display = 'block';
       document.getElementById('unnecessary-asset').innerText = asset.toLocaleString() + '만원';
       document.getElementById('unnecessary-debt').innerText = debt.toLocaleString() + '만원';
+      renderConditionTags('unnecessary-condition-tags', income, debt, asset, fsize);
       return;
     }
 
@@ -1955,6 +2035,7 @@
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
         debt > 0 ? formatDebt(debt) + ' 채무 소멸 가능' : '채무 소멸 가능';
+      renderConditionTags('bk-condition-tags', income, debt, asset, fsize);
       return;
     }
 
@@ -1963,6 +2044,7 @@
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
         debt > 0 ? formatDebt(debt) + ' 채무 소멸 가능' : '채무 소멸 가능';
+      renderConditionTags('bk-condition-tags', income, debt, asset, fsize);
       return;
     }
 
@@ -1971,9 +2053,9 @@
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
         formatDebt(debt) + ' 채무 소멸 가능';
-      // 10억 초과 안내 문구 표시
       var overLimitNotice = document.getElementById('over-limit-notice');
       if (overLimitNotice) overLimitNotice.style.display = 'block';
+      renderConditionTags('bk-condition-tags', income, debt, asset, fsize);
       return;
     }
 
@@ -2000,11 +2082,13 @@
       document.getElementById('diag-bankruptcy').style.display = 'block';
       document.getElementById('bankruptcy-debt-display').innerText =
         debt > 0 ? formatDebt(debt) + ' 채무 소멸 가능' : '채무 소멸 가능';
+      renderConditionTags('bk-condition-tags', income, debt, asset, fsize);
       return;
     }
 
     // ===== 개인회생 가능 =====
     document.getElementById('diag-rehabilitation').style.display = 'block';
+    renderConditionTags('rehab-condition-tags', income, debt, asset, fsize);
 
     var finalTotal = Math.max(totalPayment, minPayment, asset);
     var finalMonthly = finalTotal / period;
@@ -2056,6 +2140,22 @@
         items[i].classList.remove('auto-highlight');
       }, delays[i] + duration + 300);
     });
+  }
+
+  function renderConditionTags(containerId, income, debt, asset, fsize) {
+    var el = document.getElementById(containerId);
+    if (!el) return;
+    var dep = fsize - 1;
+    var depLabel = dep === 0 ? '부양가족 없음' : '부양가족 ' + dep + '명';
+    var tags = [
+      '월소득 ' + income.toLocaleString() + '만원',
+      '채무 ' + formatDebt(debt),
+      '재산 ' + (asset > 0 ? formatDebt(asset) : '없음'),
+      depLabel
+    ];
+    el.innerHTML = tags.map(function(t) {
+      return '<span class="condition-tag">' + t + '</span>';
+    }).join('');
   }
 
   function toggleUpsell(el) {
