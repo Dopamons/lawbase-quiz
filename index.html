@@ -2060,20 +2060,25 @@
     }
 
     // ⑤ 최저변제액 충족 여부 확인
+    // ★ 판단은 반드시 할인 전 순수 가용소득 기준으로 (30% 마케팅 할인 미적용)
     var minPayment = calcMinPayment(debt);
-    var total36 = disposable * 36;
-    var total60 = disposable * 60;
+    var total36 = disposable * 36;   // 할인 전 36개월 총액
+    var total60 = disposable * 60;   // 할인 전 60개월 총액
 
     var period, totalPayment;
     var isBorderline = false;
 
     if (total36 >= Math.max(minPayment, asset)) {
+      // 36개월로 최저변제액 + 청산가치 모두 충족
       period = 36;
       totalPayment = total36;
     } else if (total60 >= Math.max(minPayment, asset)) {
+      // 60개월로 최저변제액 + 청산가치 모두 충족
       period = 60;
       totalPayment = total60;
     } else if (asset > 0 && asset < debt && total60 >= minPayment) {
+      // 60개월로 최저변제액은 충족하지만 청산가치 미달 → borderline
+      // 판단 기준: 할인 전 total60 vs 재산 비교 (마케팅 할인 영향 없음)
       period = 60;
       totalPayment = Math.max(total60, asset);
       isBorderline = true;
@@ -2090,10 +2095,11 @@
     document.getElementById('diag-rehabilitation').style.display = 'block';
     renderConditionTags('rehab-condition-tags', income, debt, asset, fsize);
 
+    // ★ 표시 수치만 30% 마케팅 할인 적용 (판단 로직과 완전 분리)
     var finalTotal = Math.max(totalPayment, minPayment, asset);
     var finalMonthly = finalTotal / period;
-    var adjustedMonthly = Math.round(finalMonthly * 0.70);
-    var adjustedTotal = adjustedMonthly * period;
+    var adjustedMonthly = Math.round(finalMonthly * 0.70);  // 표시용 할인 적용
+    var adjustedTotal = adjustedMonthly * period;            // 표시용 총액
 
     var reliefRate = debt > 0
       ? Math.round(Math.max(0, (1 - adjustedTotal / debt) * 100))
